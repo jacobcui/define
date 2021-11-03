@@ -6,28 +6,44 @@ import sys
 
 import translate
 from PyDictionary import PyDictionary
+import argparse
 
-if len(sys.argv) == 1:
-    print('Please put a word.')
-    sys.exit()
+def print_title(title):
+    print(title)
+    print('=' * len(title))
 
-LANG_CODE = 'zh'
-word = sys.argv[1]
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    '-t', dest='to',
+    default='zh', help='Language code as used in Google translator.')
+parser.add_argument(
+    '--translate-only', action='store_true',
+    dest='translate_only', help='Only translate')
+parser.add_argument(
+    'words', metavar='words', nargs='+',
+    help='Words to be explained.')
 
-trans= translate.Translator(to_lang=LANG_CODE)
-
-try:
-    translate_result = trans.translate(word)
-except (StopIteration, RuntimeError):
-    print(f'Meaning of {word} not found :(')
-    sys.exit()
+args = parser.parse_args()
 
 dict_obj = PyDictionary()
-meaning = dict_obj.meaning(word)
 
-for word_type, word_meanings in meaning.items():
-    print(word_type, ':')
-    for word_meaning in word_meanings:
-        print(f'\t{word_meaning}')
+if not args.translate_only:
+    for word in args.words:
+        meaning = dict_obj.meaning(word)
+        print_title(word)
+        if meaning:
+            for word_type, word_meanings in meaning.items():
+                print(word_type, ':')
+                for word_meaning in word_meanings:
+                    print(f'\t{word_meaning}')
+            print()
 
-print(translate_result)
+trans= translate.Translator(to_lang=args.to)
+
+try:
+    words = ' '.join(args.words)
+    translate_result = trans.translate(words)
+    print_title(words)
+    print(translate_result)
+except (StopIteration, RuntimeError):
+    sys.exit()
