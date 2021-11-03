@@ -3,7 +3,9 @@ A small tool to look up words in command line.
 To use, change the shebang from second line to your python installation path.
 
 # usage
-```define homes```
+```define homes``` To lookup and translate word `homes`.
+```define -t es hello``` To translate `hello` to Spanish.
+```define how are you --translate-only``` To only translate this sentence.
 
 # output
 ```
@@ -24,5 +26,4 @@ Verb :
 ```
 
 # notes
-Feel free to change your prefered translation language code according to Google translate. 
-You could also add a -t parameter and use argparse to parse it.
+Translation language code according to https://cloud.google.com/translate/docs/languages. 
